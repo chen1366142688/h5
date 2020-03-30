@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,minimum=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=yes, email=yes">
+    <script src="./build/flexible_css.debug.js"></script>
+    <script src="./build/flexible.debug.js"></script>
+    <link href="./exerciseCommon.css" rel="stylesheet" />
+    <title></title>
+  </head>
+<body>
+  <div id="app">
+    <div class="headNav">{{aWeek.title}}</div>
+    <div class="con-top" v-html="aWeek.Subheading"></div>
+    <div class="box">
+      <div class="box-top">
+        <img src="./images/home3.png" alt="">
+        <span>今日锻炼指导</span>
+      </div>
+      <p class="toDayTarget">{{aWeek.toDayTarget[toDayStr]}}</p>
+    </div>
+    <div class="tabpane" v-if="toDayStr>0">
+      <div class="tabBar" v-bind:class="{ tabActive: tabIndex==0}" @click="tabIndex = 0">T0基础训练</div>
+      <div class="tabBar" v-bind:class="{ tabActive: tabIndex==1}" @click="tabIndex = 1">T1进阶训练</div>
+      <div class="tabBar" v-bind:class="{ tabActive: tabIndex==2}" @click="tabIndex = 2">T2高级训练</div>
+    </div>
+    <div class="tabBox" v-if="toDayStr>0">
+      <table border="1">
+        <tr>
+          <th></th>
+          <th>热身运动</th>
+          <th>训练项目</th>
+          <th>拉伸放松</th>
+        </tr>
+        <tr>
+          <td class="title">项目</td>
+          <td class="hot">
+            <table>
+              <tr v-for="hotItem in weekDay[tabIndex].hot">
+                <td> 
+                  <p>{{hotItem.hot}}</p>
+                  <p class="tableNum">{{hotItem.hotGroupNumber}}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="hot">
+            <table>
+              <tr v-for="planItem in weekDay[tabIndex].plan">
+                <td> 
+                  <p>{{planItem.plan}}</p>
+                  <p class="tableNum">{{planItem.planGroupNumber}}</p>
+                </td>
+              </tr>
+              <tr v-if="weekDay[tabIndex].plan.length>1">
+                <td colspan="2" style="color:red">{{weekDay[tabIndex].plan[0].interval}}</td>
+              </tr>
+            </table>
+          </td>
+          <td class="hot">
+            <table>
+              <tr v-for="relaxItem in weekDay[tabIndex].relax">
+                <td> 
+                  <p>{{relaxItem.relax}}</p>
+                  <p class="tableNum">{{relaxItem.relaxGroupNumber}}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table> 
+      <div class="projectApp" v-if="toDayStr>0">
+        <!-- 热身运动 -->
+        <div class="bigItem fcc">
+          <img src="./images/exerciseHomework/warmUp.gif" alt="热身运动">
+        </div>
+        <div class="projectBox" v-for="(proHot,index) in weekDay[tabIndex].proData.hot" v-bind:class="{ noMar: weekDay[tabIndex].proData.hot.length-1 == index}">
+          <div class="pro-head">{{proHot.proName}}</div>
+          <div class="pro-headTxt">{{proHot.proTitle}}<span class="proBold">{{proHot.proNum}}</span>{{proHot.proOneGroupNumberCompany}}
+          </div>
+          <video v-if="proHot.videoSrc" class="video" :src="proHot.videoSrc" :poster="proHot.posterSrc" controls="controls"
+            id="0"></video>
+          <img v-else class="video" :src="proHot.gifSrc" alt="">
+          <div class="pro-target">
+            <span>训练目标：</span>{{proHot.proTarget}}
+          </div>
+          <div class="pro-target">
+            <span>训练指导：</span>{{proHot.profingerQuantity}}
+          </div>
+          <div class="pro-target" v-if="proHot.attentionDes">
+            <span>注意事项：</span>{{proHot.attentionDes}}
+          </div>
+        </div>
+        <!-- 训练项目 -->
+        <div class="bigItem fcc">
+          <img src="./images/exerciseHomework/train.gif" alt="训练项目">
+        </div>
+        <div class="projectBox noMar" v-for="(proPlan,index) in weekDay[tabIndex].proData.plan">
+          <div class="pro-head">{{proPlan.proName}}</div>
+          <div class="pro-headTxt">{{proPlan.proTitle}}<span class="proBold">{{proPlan.proNum}}</span>组 丨 每组<span class="proBold">{{proPlan.proOneGroupNumber}}</span>{{proPlan.proOneGroupNumberCompany}}丨 <span v-html="proPlan.proOneGroupdate"><span>
+          </div>
+          <video v-if="proPlan.videoSrc" class="video" :src="proPlan.videoSrc" :poster="proPlan.posterSrc" controls="controls"
+            id="0"></video>
+          <img v-else class="video" :src="proPlan.gifSrc" alt="">
+          <div class="pro-target" v-if="proPlan.beCareful">
+            <span>注意：</span>{{proPlan.beCareful}}
+          </div>
+          <div class="pro-target">
+            <span>训练目标：</span>{{proPlan.proTarget}}
+          </div>
+          <div class="pro-target">
+            <span>训练指导：</span>{{proPlan.profingerQuantity}}
+          </div>
+          <div class="pro-target" v-if="proPlan.attentionDes">
+            <span>注意事项：</span>{{proPlan.attentionDes}}
+          </div>
+          <div class="proFoot" v-if="weekDay[tabIndex].proData.plan.length>1 && weekDay[tabIndex].proData.plan.length-1 != index"></div>
+          <div class="timeInterval fcc" style="color:red" v-if="weekDay[tabIndex].proData.plan.length>1 && weekDay[tabIndex].proData.plan.length-1 != index">
+            <img v-if="weekDay[tabIndex].proData.planTimeInterval == '每个动作之间休息2-3分钟'" src="./images/exerciseHomework/rest2-3min.gif" alt="">
+            <img v-if="weekDay[tabIndex].proData.planTimeInterval == '每个动作之间休息3-5分钟'" src="./images/exerciseHomework/rest3-5min.gif" alt="">
+          </div>
+        </div>
+        <!-- 拉伸放松-->
+        <div class="bigItem fcc">
+          <img src="./images/exerciseHomework/stretching.gif" alt="拉伸放松">
+        </div>
+        <div class="projectBox" v-for="(proRelax,index) in weekDay[tabIndex].proData.relax" v-bind:class="{ noMar: weekDay[tabIndex].proData.relax.length-1 == index}">
+          <div class="pro-head">{{proRelax.proName}}</div>
+          <div class="pro-headTxt">{{proRelax.proTitle}}<span class="proBold">{{proRelax.proNum}}</span>组 丨 <span v-html="proRelax.proOneGroupNumberCompany"></span>
+          </div>
+          <video v-if="proRelax.videoSrc" class="video" :src="proRelax.videoSrc" :poster="proRelax.posterSrc" controls="controls"
+            id="0"></video>
+          <img v-else class="video" :src="proRelax.gifSrc" alt="">
+          <div class="pro-target">
+            <span>训练目标：</span>{{proRelax.proTarget}}
+          </div>
+          <div class="pro-target">
+            <span>训练指导：</span>{{proRelax.profingerQuantity}}
+          </div>
+          <div class="pro-target" v-if="proRelax.attentionDes">
+            <span>注意事项：</span>{{proRelax.attentionDes}}
+          </div>
+        </div>
+      </div>
+      <footer>
+        <img src="./images/tmHealthLog.png" alt="">
+        <span>以上内容由“小马健康”提供</span>
+      </footer> 
+    </div>
+    <!-- 弹出层 -->
+    <div id="modalApp" v-if="isShowModal">
+      <div class="scroolBox">
+        <div class="modal-title">锻炼注意事项</div>
+        <div class="modal-tips">
+          <div class="bg"></div>
+          <p class="text">为了保证您的锻炼科学安全，锻炼前请详细阅读。</p>
+        </div>
+        <div class="modal-content">
+          <div class="modal-box" v-for="box in aWeek.matters">
+            <div class="box-top">
+              <span v-text="box.title"></span>
+            </div>
+            <div v-for="(item,index) in box.mattersNeedingAttention">
+              <p v-html="`${item.key?item.key+'.':item.key} ${item.text}`"></p>
+              <p v-for="val in item.data">
+                <span v-text="`${val.name}) ${val.content}`"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="alreadyRead fcc" @click="isShowModal=false">
+          <p class="btn">我已阅读，去锻炼</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="./js/aWeek.js"></script>
+  <script src="./js/url-helper.js" type="text/javascript"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        aWeek:{
+          toDayTarget:['']
+        },
+        isShowModal:true,//是否展示弹层
+        tabIndex:0,//当前等级
+        toDayStr:0,//当期是星期几
+        hotArr:[{hot: '',hotGroupNumber: ''},],
+        planArr: [{plan: '',planGroupNumber: ''}],
+        relaxArr: [{relax: '',relaxGroupNumber: ''}],
+        weekDay:[]
+      },
+      created(){},
+      mounted(){
+        let nowDate = formatTime(new Date());
+        let code = GetQueryString('code') || '';  
+        userId = GetQueryString('userId') || '';
+        let grade = GetQueryString('grade') || '';
+        let str = new Date().getDay();
+        if(code){str = parseInt(code)}
+        if (grade == 12) {this.aWeek = aWeek.aWeek12}
+        if (grade == 34) {this.aWeek = aWeek.aWeek34}
+        if (grade == 56) {this.aWeek = aWeek.aWeek56}
+        if (grade == 7) {this.aWeek = aWeek.aWeek7}
+        if (grade == 8) {this.aWeek = aWeek.aWeek8}
+        if (grade == 9) {this.aWeek = aWeek.aWeek9}
+        this.toDayStr = str
+        switch (str) {
+          case 0:
+            break;
+          case 1:
+          this.weekDay = this.aWeek.Monday;
+            break;
+          case 2:
+          this.weekDay = this.aWeek.Tuesday;
+            break;
+          case 3:
+          this.weekDay = this.aWeek.Wednesday;
+            break;
+          case 4:
+          this.weekDay = this.aWeek.Thursday;
+            break;
+          case 5:
+          this.weekDay = this.aWeek.Friday;
+            break;
+          case 6:
+          this.weekDay = this.aWeek.Saturday;
+            break;
+        }
+
+        document.getElementsByTagName("title")[0].innerText = this.aWeek.title;
+      },
+      methods:{
+       
+      },
+      beforeDestroy(){},
+      destroyed(){}
+    })
+    
+  </script>
+</body>
+</html>
