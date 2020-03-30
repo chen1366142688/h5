@@ -13,7 +13,7 @@
     <title></title>
   </head>
 <body>
-  <div id="app">
+  <div id="app" @touchmove.prevent>
     <div class="headNav">{{aWeek.title}}</div>
     <div class="con-top" v-html="aWeek.Subheading"></div>
     <div class="box">
@@ -152,7 +152,7 @@
       </footer> 
     </div>
     <!-- 弹出层 -->
-    <div id="modalApp" v-if="isShowModal">
+    <div id="modalApp" v-if="isShowModal"   @touchmove.prevent>
       <div class="scroolBox">
         <div class="modal-title">锻炼注意事项</div>
         <div class="modal-tips">
@@ -237,7 +237,14 @@
         document.getElementsByTagName("title")[0].innerText = this.aWeek.title;
       },
       methods:{
-       
+        appMove(e){
+          console.log('app',e)
+          // cancelBubble = true
+        },
+        modalAppMove(e){
+          console.log('modal',e)
+          e.cancelBubble = true
+        },
       },
       beforeDestroy(){},
       destroyed(){}
