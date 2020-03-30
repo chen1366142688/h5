@@ -153,7 +153,7 @@
     </div>
     <!-- 弹出层 -->
     <div id="modalApp" v-if="isShowModal">
-      <div class="scroolBox" @touchmove="touchend">
+      <div class="scroolBox" @touchend="touchend">
         <div class="modal-title">锻炼注意事项</div>
         <div class="modal-tips">
           <div class="bg"></div>
@@ -241,7 +241,8 @@
           if (event.target == event.currentTarget) {
             console.log("退出")
           } else { 
-            event.stopPropagation();
+            // event.stopPropagation();
+            event.preventDefault()
             return
           }
         }
